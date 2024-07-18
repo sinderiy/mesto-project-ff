@@ -1,3 +1,6 @@
+import './blocks/index.css';
+
+import {initialCards} from './scripts/cards.js';
 
 function createCard(cardData, deleteCallback) {
     const cardTemplate = document.querySelector('#card-template').content;
