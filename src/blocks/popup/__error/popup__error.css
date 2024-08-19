@@ -1,0 +1,7 @@
+.popup__error_visible {
+    font-size: 12px;
+    color: #FF0000;
+    /* position: absolute; */
+    display: flex;
+    padding-inline-end: 36px;
+}

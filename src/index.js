@@ -1,7 +1,11 @@
+// enableValidation и clearValidation здесь
+
 import './pages/index.css';
 import { initialCards } from './scripts/cards.js';
 import { createCard, deleteCard, likeCard } from './scripts/card.js';
 import { openModal, closeModal } from './scripts/modal.js';
+import { enableValidation, clearValidation } from './scripts/validation.js';
+import { userInfo } from './scripts/api.js';
 
 const placesList = document.querySelector('.places__list');
 const newCardPopup = document.querySelector('.popup_type_new-card');
@@ -20,6 +24,15 @@ const newCardFormElement = document.querySelector('form[name="new-place"]');
 const placeNameInput = newCardFormElement.querySelector('.popup__input_type_card-name');
 const placeUrlInput = newCardFormElement.querySelector('.popup__input_type_url');
 const popupList = document.querySelectorAll('.popup');
+
+const objConfig = {
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_disabled',
+    inputErrorClass: 'popup__input_type_error',
+    errorClass: 'popup__error_visible'
+};
 
 // Настройка модальных окон
 popupList.forEach((item) => {
@@ -46,6 +59,7 @@ profileEditButton.addEventListener('click', () => {
     nameInput.value = nameElement.textContent;
     jobInput.value = jobElement.textContent;
     openModal(typeEditPopup);
+    clearValidation(profileFormElement, objConfig);
 });
 
 // Открытие изображения карточки
@@ -78,6 +92,7 @@ function handleNewImageSubmit(evt) {
     const newCard = createCard(newCardObj, deleteCard, likeCard, openCardImage);
     placesList.prepend(newCard);
     newCardFormElement.reset();
+    clearValidation(newCardFormElement, objConfig);
     closeModal(newCardPopup);
 };
 
@@ -86,3 +101,7 @@ initialCards.forEach((item) => {
     const card = createCard(item, deleteCard, likeCard, openCardImage);
     placesList.append(card);
 });
+
+enableValidation(objConfig); 
+
+userInfo();
