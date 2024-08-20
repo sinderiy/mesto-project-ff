@@ -1,11 +1,8 @@
-// enableValidation и clearValidation здесь
-
 import './pages/index.css';
-import { initialCards } from './scripts/cards.js';
 import { createCard, deleteCard, likeCard } from './scripts/card.js';
 import { openModal, closeModal } from './scripts/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
-import { userInfo } from './scripts/api.js';
+import { getUserInfo, getInitialCards, patchUserInfo, addNewCard } from './scripts/api.js';
 
 const placesList = document.querySelector('.places__list');
 const newCardPopup = document.querySelector('.popup_type_new-card');
@@ -20,6 +17,7 @@ const nameInput = profileFormElement.querySelector('.popup__input_type_name');
 const jobInput = profileFormElement.querySelector('.popup__input_type_description');
 const nameElement = document.querySelector('.profile__title');
 const jobElement = document.querySelector('.profile__description');
+const avatarElement = document.querySelector('.profile__image');
 const newCardFormElement = document.querySelector('form[name="new-place"]');
 const placeNameInput = newCardFormElement.querySelector('.popup__input_type_card-name');
 const placeUrlInput = newCardFormElement.querySelector('.popup__input_type_url');
@@ -77,6 +75,7 @@ function handleProfileFormSubmit(evt) {
     evt.preventDefault();
     nameElement.textContent = nameInput.value;
     jobElement.textContent = jobInput.value;
+    patchUserInfo(nameInput.value, jobInput.value);
     closeModal(typeEditPopup);
 };
 
@@ -93,15 +92,23 @@ function handleNewImageSubmit(evt) {
     placesList.prepend(newCard);
     newCardFormElement.reset();
     clearValidation(newCardFormElement, objConfig);
+    addNewCard(newCardObj.name, newCardObj.link);
     closeModal(newCardPopup);
 };
 
-// Создание стартового набора карточек
-initialCards.forEach((item) => {
-    const card = createCard(item, deleteCard, likeCard, openCardImage);
-    placesList.append(card);
-});
+enableValidation(objConfig);
 
-enableValidation(objConfig); 
-
-userInfo();
+// Загрузка профиля и создание стартового набора карточек после выполнения промисов
+Promise.all([getUserInfo(), getInitialCards()])
+    .then((values) => {
+        const userInfo = values[0];
+        const initialCards = values[1];
+        nameElement.textContent = userInfo.name;
+        jobElement.textContent = userInfo.about;
+        avatarElement.style = `background-image: url(${userInfo.avatar});`;
+        // const userID = userInfo._id;
+        initialCards.forEach((item) => {
+            const card = createCard(item, deleteCard, likeCard, openCardImage);
+            placesList.append(card);
+        });
+    });

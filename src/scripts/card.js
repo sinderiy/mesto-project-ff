@@ -9,11 +9,15 @@ export function createCard(cardData, deleteCallback, likeCallback, openCardImage
   likeButton.addEventListener('click', likeCallback);
   const cardImage = cardElement.querySelector('.card__image');
   cardImage.addEventListener('click', openCardImageCallback);
-  
+
   cardImage.src = cardData.link;
   cardImage.alt = cardData.name;
   cardElement.querySelector('.card__title').textContent = cardData.name;
-  
+
+  const likeCountElement = cardElement.querySelector('.card__likes-count');
+  if (cardData.likes.length > 0) {
+    likeCountElement.textContent = cardData.likes.length;
+  }
   return cardElement;
 };
 

@@ -12,14 +12,76 @@
 // запросы добавления, удаления и лайка карточек;
 // карточки отображаются на странице только после получения _id пользователя для чего применен Promiss.all;
 
-export function userInfo() {
-  return fetch('https://nomoreparties.co/v1/wff-cohort-20/users/me', {
+const config = {
+  baseURL: 'https://nomoreparties.co/v1/wff-cohort-20',
+  headers: {
+    authorization: '320df562-e03c-4e12-adb7-946c662f4a40',
+    'Content-Type': 'application/json'
+  }
+}
+
+// Получение данных пользователя
+export const getUserInfo = () => {
+  return fetch(`${config.baseURL}/users/me`, {
     headers: {
-      authorization: '320df562-e03c-4e12-adb7-946c662f4a40'
+      authorization: config.headers.authorization
     }
   })
-  .then(res => res.json())
-  .then((result) => {
-    console.log(result);
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Запрос getUserInfo завершился с ошибкой: ${res.status}`);
+    })
+    .catch((err) => {
+      console.log(err); // "если что-то пошло не так"
+    });
+};
+
+// Получение массива карточек
+export const getInitialCards = () => {
+  return fetch(`${config.baseURL}/cards`, {
+    headers: {
+      authorization: config.headers.authorization
+    }
+  })
+  .then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Запрос getInitialCards завершился с ошибкой: ${res.status}`);
+  })
+  .catch((err) => {
+    console.log(err); // "если что-то пошло не так"
   });
 };
+
+// Обновление информации профиля
+export const patchUserInfo = (userName, userAbout) => {
+  fetch(`${config.baseURL}/users/me`, {
+    method: 'PATCH',
+    headers: {
+      authorization: config.headers.authorization,
+      'Content-Type': config.headers['Content-Type']
+    },
+    body: JSON.stringify({
+      name: userName,
+      about: userAbout
+    })
+  }); 
+}
+
+// Добавление новой карточки на сервер
+export const addNewCard = (cardName, cardLink) => {
+  fetch(`${config.baseURL}/cards`,{
+    method: 'POST',
+    headers: {
+      authorization: config.headers.authorization,
+      'Content-Type': config.headers['Content-Type']
+    },
+    body: JSON.stringify({
+      name: cardName,
+      link: cardLink
+    })
+  });
+}
