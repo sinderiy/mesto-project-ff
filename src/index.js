@@ -2,7 +2,7 @@ import './pages/index.css';
 import { createCard, deleteCard, likeCard } from './scripts/card.js';
 import { openModal, closeModal } from './scripts/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
-import { getUserInfo, getInitialCards, patchUserInfo, addNewCard } from './scripts/api.js';
+import { getUserInfo, getInitialCards, patchUserInfo, addNewCard, deleteCard as deleteCardApi } from './scripts/api.js';
 
 const placesList = document.querySelector('.places__list');
 const newCardPopup = document.querySelector('.popup_type_new-card');
@@ -31,6 +31,8 @@ const objConfig = {
     inputErrorClass: 'popup__input_type_error',
     errorClass: 'popup__error_visible'
 };
+
+let currentUserID = undefined;
 
 // Настройка модальных окон
 popupList.forEach((item) => {
@@ -84,16 +86,34 @@ newCardFormElement.addEventListener('submit', handleNewImageSubmit);
 // Добавление новой карточки из данных введенных пользователем
 function handleNewImageSubmit(evt) {
     evt.preventDefault();
-    const newCardObj = {
-        name: placeNameInput.value,
-        link: placeUrlInput.value,
-    };
-    const newCard = createCard(newCardObj, deleteCard, likeCard, openCardImage);
-    placesList.prepend(newCard);
-    newCardFormElement.reset();
-    clearValidation(newCardFormElement, objConfig);
-    addNewCard(newCardObj.name, newCardObj.link);
-    closeModal(newCardPopup);
+    addNewCard(placeNameInput.value, placeUrlInput.value)
+        .then((newCardInfo) => {
+            const newCardObj = {
+                likes: [],
+                _id: newCardInfo._id,
+                name: placeNameInput.value,
+                link: placeUrlInput.value,
+                owner: {
+                    _id: currentUserID
+                }
+            };
+            const newCard = createCard(currentUserID, newCardObj, deleteCardCallback, likeCard, openCardImage);
+            placesList.prepend(newCard);
+            newCardFormElement.reset();
+            clearValidation(newCardFormElement, objConfig);
+            closeModal(newCardPopup);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+
+// Удаление карточки визуально и на сервере
+function deleteCardCallback(evt) {
+    deleteCard(evt);
+    const placeItem = evt.target.closest('.places__item');
+    const cardElementID = placeItem.id;
+    deleteCardApi(cardElementID);
 };
 
 enableValidation(objConfig);
@@ -106,9 +126,9 @@ Promise.all([getUserInfo(), getInitialCards()])
         nameElement.textContent = userInfo.name;
         jobElement.textContent = userInfo.about;
         avatarElement.style = `background-image: url(${userInfo.avatar});`;
-        // const userID = userInfo._id;
-        initialCards.forEach((item) => {
-            const card = createCard(item, deleteCard, likeCard, openCardImage);
+        currentUserID = userInfo._id;
+        initialCards.forEach((cardData) => {
+            const card = createCard(currentUserID, cardData, deleteCardCallback, likeCard, openCardImage);
             placesList.append(card);
         });
     });

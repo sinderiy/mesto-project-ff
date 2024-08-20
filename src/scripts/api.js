@@ -45,20 +45,20 @@ export const getInitialCards = () => {
       authorization: config.headers.authorization
     }
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Запрос getInitialCards завершился с ошибкой: ${res.status}`);
-  })
-  .catch((err) => {
-    console.log(err); // "если что-то пошло не так"
-  });
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Запрос getInitialCards завершился с ошибкой: ${res.status}`);
+    })
+    .catch((err) => {
+      console.log(err); // "если что-то пошло не так"
+    });
 };
 
 // Обновление информации профиля
 export const patchUserInfo = (userName, userAbout) => {
-  fetch(`${config.baseURL}/users/me`, {
+  return fetch(`${config.baseURL}/users/me`, {
     method: 'PATCH',
     headers: {
       authorization: config.headers.authorization,
@@ -68,12 +68,12 @@ export const patchUserInfo = (userName, userAbout) => {
       name: userName,
       about: userAbout
     })
-  }); 
+  });
 }
 
 // Добавление новой карточки на сервер
 export const addNewCard = (cardName, cardLink) => {
-  fetch(`${config.baseURL}/cards`,{
+  return fetch(`${config.baseURL}/cards`, {
     method: 'POST',
     headers: {
       authorization: config.headers.authorization,
@@ -83,5 +83,22 @@ export const addNewCard = (cardName, cardLink) => {
       name: cardName,
       link: cardLink
     })
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Запрос addNewCard завершился с ошибкой: ${res.status}`);
+    });
+}
+
+// Удаление карточки на сервере
+export const deleteCard = (cardId) => {
+  return fetch(`${config.baseURL}/cards/${cardId}`, {
+    method: 'DELETE',
+    headers: {
+      authorization: config.headers.authorization,
+      'Content-Type': config.headers['Content-Type']
+    }
   });
 }
