@@ -1,17 +1,4 @@
-// описаны функции запросов к серверу;
-// запросы присвоены переменным и экспоритруются;
-// ответ сервера всегда проверяется на корректность проверкой res.ok;
-// в конце цепочки обработки каждого промиса обращения к серверу есть обработка ошибок;
-// обрабатывать ошибки попавшие в catch;
-// в функциях запросов нет работы с DOM 
-// базовый адрес сервера и ключ авторизации вынесены отдельно и переиспользуются;
-// запросы: 
-// получение данных пользователя и карточек,
-// обновление данных пользователя, 
-// обновление аватара пользователя, 
-// запросы добавления, удаления и лайка карточек;
-// карточки отображаются на странице только после получения _id пользователя для чего применен Promiss.all;
-
+// Конфигурация запросов
 const config = {
   baseURL: 'https://nomoreparties.co/v1/wff-cohort-20',
   headers: {
@@ -23,9 +10,7 @@ const config = {
 // Получение данных пользователя
 export const getUserInfo = () => {
   return fetch(`${config.baseURL}/users/me`, {
-    headers: {
-      authorization: config.headers.authorization
-    }
+    headers: config.headers
   })
     .then((res) => {
       if (res.ok) {
@@ -38,9 +23,7 @@ export const getUserInfo = () => {
 // Получение массива карточек
 export const getInitialCards = () => {
   return fetch(`${config.baseURL}/cards`, {
-    headers: {
-      authorization: config.headers.authorization
-    }
+    headers: config.headers
   })
     .then((res) => {
       if (res.ok) {
@@ -54,10 +37,7 @@ export const getInitialCards = () => {
 export const patchUserInfo = (userName, userAbout) => {
   return fetch(`${config.baseURL}/users/me`, {
     method: 'PATCH',
-    headers: {
-      authorization: config.headers.authorization,
-      'Content-Type': config.headers['Content-Type']
-    },
+    headers: config.headers,
     body: JSON.stringify({
       name: userName,
       about: userAbout
@@ -75,10 +55,7 @@ export const patchUserInfo = (userName, userAbout) => {
 export const addNewCard = (cardName, cardLink) => {
   return fetch(`${config.baseURL}/cards`, {
     method: 'POST',
-    headers: {
-      authorization: config.headers.authorization,
-      'Content-Type': config.headers['Content-Type']
-    },
+    headers: config.headers,
     body: JSON.stringify({
       name: cardName,
       link: cardLink
@@ -96,10 +73,7 @@ export const addNewCard = (cardName, cardLink) => {
 export const deleteCard = (cardId) => {
   return fetch(`${config.baseURL}/cards/${cardId}`, {
     method: 'DELETE',
-    headers: {
-      authorization: config.headers.authorization,
-      'Content-Type': config.headers['Content-Type']
-    }
+    headers: config.headers
   })
   .then((res) => {
     if (res.ok) {
@@ -113,10 +87,7 @@ export const deleteCard = (cardId) => {
 export const putLike = (cardId) => {
   return fetch(`${config.baseURL}/cards/likes/${cardId}`, {
     method: 'PUT',
-    headers: {
-      authorization: config.headers.authorization,
-      'Content-Type': config.headers['Content-Type']
-    }
+    headers: config.headers
   })
   .then((res) => {
     if (res.ok) {
@@ -130,10 +101,7 @@ export const putLike = (cardId) => {
 export const deleteLike = (cardId) => {
   return fetch(`${config.baseURL}/cards/likes/${cardId}`, {
     method: 'DELETE',
-    headers: {
-      authorization: config.headers.authorization,
-      'Content-Type': config.headers['Content-Type']
-    }
+    headers: config.headers
   })
   .then((res) => {
     if (res.ok) {
@@ -147,10 +115,7 @@ export const deleteLike = (cardId) => {
 export const patchUserAvatar = (avatarURL) => {
   return fetch(`${config.baseURL}/users/me/avatar`, {
     method: 'PATCH',
-    headers: {
-      authorization: config.headers.authorization,
-      'Content-Type': config.headers['Content-Type']
-    },
+    headers: config.headers,
     body: JSON.stringify({
       avatar: avatarURL
     })

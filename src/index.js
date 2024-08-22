@@ -53,19 +53,21 @@ function openCardImage(evt) {
     openModal(typeImagePopup);
 };
 
-// Обновление аватара пользователя
+// Изменение аватара пользователя
 function handleAvatarFormSubmit(evt) {
     evt.preventDefault();
     patchUserAvatar(avatarUrlInput.value)
         .then(() => {
             renderLoading(false, evt.target);
             closeModal(avatarEditPopup);
-            avatarUrlInput.value = '';
+            avatarElement.style = `background-image: url(${avatarUrlInput.value});`;
+            avatarFormElement.reset();
+            clearValidation(avatarFormElement, objConfig);
         })
         .catch((error) => {
             console.log(error);
         });
-        renderLoading(true, evt.target);
+    renderLoading(true, evt.target);
 };
 
 // Изменение данных профиля
@@ -108,7 +110,7 @@ function handleNewImageSubmit(evt) {
         .catch((error) => {
             console.log(error);
         });
-        renderLoading(true, evt.target);
+    renderLoading(true, evt.target);
 };
 
 // Удаление карточки визуально и на сервере
@@ -162,12 +164,13 @@ popupList.forEach((item) => {
 // Открытие модального окна "Добавление карточки"
 addButton.addEventListener('click', () => {
     openModal(newCardPopup);
+    clearValidation(newCardFormElement, objConfig);
 });
 
 // Открытие модального окна "Обновить аватар"
 userAvatar.addEventListener('click', () => {
     openModal(avatarEditPopup);
-    // clearValidation(avatarFormElement, objConfig);
+    clearValidation(avatarFormElement, objConfig);
 });
 
 // Открытие модального окна "Профиль"

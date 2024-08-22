@@ -1,8 +1,3 @@
-// Из файла экспортируется только функция активации валидации enableValidation и функция очистки ошибок валидации clearValidation;
-
-// TODO:
-// Кнопка остается неактивна при закрытии окна редактирования профиля с невалидными данными и повторном открытии попапа 
-
 // Проверка валидности поля
 const isValid = (formElement, inputElement, objConfig) => {
     if (inputElement.validity.patternMismatch) {
@@ -17,7 +12,7 @@ const isValid = (formElement, inputElement, objConfig) => {
     }
 };
 
-// Добавление класса с ошибкой
+// Показать сообщение об ошибке 
 const showInputError = (formElement, inputElement, errorMessage, objConfig) => {
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
     inputElement.classList.add(objConfig.inputErrorClass);
@@ -25,7 +20,7 @@ const showInputError = (formElement, inputElement, errorMessage, objConfig) => {
     errorElement.textContent = errorMessage;
 };
 
-// Удаление класса с ошибкой
+// Скрыть сообщение об ошибке
 const hideInputError = (formElement, inputElement, objConfig) => {
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
     inputElement.classList.remove(objConfig.inputErrorClass);
@@ -59,16 +54,15 @@ export const clearValidation = (formElement, objConfig) => {
     const inputList = Array.from(formElement.querySelectorAll(objConfig.inputSelector));
     const buttonElement = formElement.querySelector(objConfig.submitButtonSelector);
     inputList.forEach((inputElement) => {
-        isValid(formElement, inputElement, objConfig);
+        hideInputError(formElement, inputElement, objConfig);
     });
-    toggleButtonState(inputList, buttonElement, objConfig);
+    buttonElement.disabled = true;
+    buttonElement.classList.add(objConfig.inactiveButtonClass);
 };
 
 // Проверка наличия невалидного поля
 const hasInvalidInput = (inputList) => {
     return inputList.some((inputElement) => {
-        // console.log(inputElement);
-        // console.log(`${inputElement} ${(inputElement.validity.valid ? 'валидный' : 'невалидный')}. Значение: ${inputElement.value}`);
         return !inputElement.validity.valid;
     })
 };
