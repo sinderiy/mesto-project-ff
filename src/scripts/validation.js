@@ -67,6 +67,7 @@ export const clearValidation = (formElement, objConfig) => {
 // Проверка наличия невалидного поля
 const hasInvalidInput = (inputList) => {
     return inputList.some((inputElement) => {
+        // console.log(inputElement);
         // console.log(`${inputElement} ${(inputElement.validity.valid ? 'валидный' : 'невалидный')}. Значение: ${inputElement.value}`);
         return !inputElement.validity.valid;
     })
