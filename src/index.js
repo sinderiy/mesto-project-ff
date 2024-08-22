@@ -164,7 +164,6 @@ popupList.forEach((item) => {
 // Открытие модального окна "Добавление карточки"
 addButton.addEventListener('click', () => {
     openModal(newCardPopup);
-    clearValidation(newCardFormElement, objConfig);
 });
 
 // Открытие модального окна "Обновить аватар"
