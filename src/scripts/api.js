@@ -163,17 +163,3 @@ export const patchUserAvatar = (avatarURL) => {
   });
 }
 
-// Проверка валидности аватара
-const checkUserAvatar = (avatarURL) => {
-  return fetch(`${avatarURL}`, {
-    method: 'HEAD',
-  })
-  .then((res) => {
-    if (res.headers.get('Content-Type').contains('image/')) {
-      return res.json();
-    }
-  })
-  .then((info) => {
-    console.log(info);
-  })
-}

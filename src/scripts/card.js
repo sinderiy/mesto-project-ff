@@ -51,6 +51,5 @@ export function deleteCard(evt) {
 
 // Переключение лайка карточки
 export function likeCard(evt) {
-  // const likeButton = evt.target;
   evt.target.classList.toggle('card__like-button_is-active');
 }; 

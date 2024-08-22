@@ -2,12 +2,10 @@
 
 // TODO:
 // Кнопка остается неактивна при закрытии окна редактирования профиля с невалидными данными и повторном открытии попапа 
-// Починить сползание инпутов при появлении сообщений об ошибке
 
 // Проверка валидности поля
 const isValid = (formElement, inputElement, objConfig) => {
     if (inputElement.validity.patternMismatch) {
-        console.log('Pattern mismatch.');
         inputElement.setCustomValidity(inputElement.dataset.errorMessage);
     } else {
         inputElement.setCustomValidity("");
@@ -69,8 +67,8 @@ export const clearValidation = (formElement, objConfig) => {
 // Проверка наличия невалидного поля
 const hasInvalidInput = (inputList) => {
     return inputList.some((inputElement) => {
-        console.log(inputElement);
-        console.log(`${inputElement} ${(inputElement.validity.valid ? 'валидный' : 'невалидный')}. Значение: ${inputElement.value}`);
+        // console.log(inputElement);
+        // console.log(`${inputElement} ${(inputElement.validity.valid ? 'валидный' : 'невалидный')}. Значение: ${inputElement.value}`);
         return !inputElement.validity.valid;
     })
 };

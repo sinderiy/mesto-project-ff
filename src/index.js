@@ -2,7 +2,7 @@ import './pages/index.css';
 import { createCard, deleteCard, likeCard, updateLikeCount } from './scripts/card.js';
 import { openModal, closeModal } from './scripts/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
-import { getUserInfo, getInitialCards, patchUserInfo, addNewCard, deleteCard as deleteCardApi, putLike, deleteLike, patchUserAvatar, checkUserAvatar } from './scripts/api.js';
+import { getUserInfo, getInitialCards, patchUserInfo, addNewCard, deleteCard as deleteCardApi, putLike, deleteLike, patchUserAvatar } from './scripts/api.js';
 
 const placesList = document.querySelector('.places__list');
 const newCardPopup = document.querySelector('.popup_type_new-card');
@@ -60,12 +60,12 @@ function handleAvatarFormSubmit(evt) {
         .then(() => {
             renderLoading(false, evt.target);
             closeModal(avatarEditPopup);
+            avatarUrlInput.value = '';
         })
         .catch((error) => {
             console.log(error);
         });
-    renderLoading(true, evt.target);
-    checkUserAvatar(avatarUrlInput.value);
+        renderLoading(true, evt.target);
 };
 
 // Изменение данных профиля
@@ -100,15 +100,15 @@ function handleNewImageSubmit(evt) {
             };
             const newCard = createCard(currentUserID, newCardObj, deleteCardCallback, toggleLikeCallback, openCardImage);
             placesList.prepend(newCard);
-            newCardFormElement.reset();
             clearValidation(newCardFormElement, objConfig);
+            newCardFormElement.reset();
             renderLoading(false, evt.target);
             closeModal(newCardPopup);
         })
         .catch((error) => {
             console.log(error);
         });
-    renderLoading(true, evt.target);
+        renderLoading(true, evt.target);
 };
 
 // Удаление карточки визуально и на сервере
@@ -166,8 +166,8 @@ addButton.addEventListener('click', () => {
 
 // Открытие модального окна "Обновить аватар"
 userAvatar.addEventListener('click', () => {
-    clearValidation(avatarFormElement, objConfig);
     openModal(avatarEditPopup);
+    // clearValidation(avatarFormElement, objConfig);
 });
 
 // Открытие модального окна "Профиль"
