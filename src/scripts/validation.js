@@ -7,6 +7,7 @@
 // Проверка валидности поля
 const isValid = (formElement, inputElement, objConfig) => {
     if (inputElement.validity.patternMismatch) {
+        console.log('Pattern mismatch.');
         inputElement.setCustomValidity(inputElement.dataset.errorMessage);
     } else {
         inputElement.setCustomValidity("");
@@ -59,15 +60,17 @@ export const enableValidation = (objConfig) => {
 export const clearValidation = (formElement, objConfig) => {
     const inputList = Array.from(formElement.querySelectorAll(objConfig.inputSelector));
     const buttonElement = formElement.querySelector(objConfig.submitButtonSelector);
-    toggleButtonState(inputList, buttonElement, objConfig);
     inputList.forEach((inputElement) => {
-        hideInputError(formElement, inputElement, objConfig);
+        isValid(formElement, inputElement, objConfig);
     });
+    toggleButtonState(inputList, buttonElement, objConfig);
 };
 
 // Проверка наличия невалидного поля
 const hasInvalidInput = (inputList) => {
     return inputList.some((inputElement) => {
+        console.log(inputElement);
+        console.log(`${inputElement} ${(inputElement.validity.valid ? 'валидный' : 'невалидный')}. Значение: ${inputElement.value}`);
         return !inputElement.validity.valid;
     })
 };

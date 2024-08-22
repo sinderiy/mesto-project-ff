@@ -32,9 +32,6 @@ export const getUserInfo = () => {
         return res.json();
       }
       return Promise.reject(`Запрос getUserInfo завершился с ошибкой: ${res.status}`);
-    })
-    .catch((err) => {
-      console.log(err); // "если что-то пошло не так"
     });
 };
 
@@ -50,9 +47,6 @@ export const getInitialCards = () => {
         return res.json();
       }
       return Promise.reject(`Запрос getInitialCards завершился с ошибкой: ${res.status}`);
-    })
-    .catch((err) => {
-      console.log(err); // "если что-то пошло не так"
     });
 };
 
@@ -68,6 +62,12 @@ export const patchUserInfo = (userName, userAbout) => {
       name: userName,
       about: userAbout
     })
+  })
+  .then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Запрос patchUserInfo завершился с ошибкой: ${res.status}`);
   });
 }
 
@@ -100,5 +100,80 @@ export const deleteCard = (cardId) => {
       authorization: config.headers.authorization,
       'Content-Type': config.headers['Content-Type']
     }
+  })
+  .then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Запрос deleteCard завершился с ошибкой: ${res.status}`);
   });
+}
+
+// Постановка лайка
+export const putLike = (cardId) => {
+  return fetch(`${config.baseURL}/cards/likes/${cardId}`, {
+    method: 'PUT',
+    headers: {
+      authorization: config.headers.authorization,
+      'Content-Type': config.headers['Content-Type']
+    }
+  })
+  .then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Запрос putLike завершился с ошибкой: ${res.status}`);
+  });
+}
+
+// Удаление лайка
+export const deleteLike = (cardId) => {
+  return fetch(`${config.baseURL}/cards/likes/${cardId}`, {
+    method: 'DELETE',
+    headers: {
+      authorization: config.headers.authorization,
+      'Content-Type': config.headers['Content-Type']
+    }
+  })
+  .then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Запрос deleteLike завершился с ошибкой: ${res.status}`);
+  });
+}
+
+// Обновление аватара пользователя
+export const patchUserAvatar = (avatarURL) => {
+  return fetch(`${config.baseURL}/users/me/avatar`, {
+    method: 'PATCH',
+    headers: {
+      authorization: config.headers.authorization,
+      'Content-Type': config.headers['Content-Type']
+    },
+    body: JSON.stringify({
+      avatar: avatarURL
+    })
+  })
+  .then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Запрос patchUserAvatar завершился с ошибкой: ${res.status}`);
+  });
+}
+
+// Проверка валидности аватара
+const checkUserAvatar = (avatarURL) => {
+  return fetch(`${avatarURL}`, {
+    method: 'HEAD',
+  })
+  .then((res) => {
+    if (res.headers.get('Content-Type').contains('image/')) {
+      return res.json();
+    }
+  })
+  .then((info) => {
+    console.log(info);
+  })
 }
