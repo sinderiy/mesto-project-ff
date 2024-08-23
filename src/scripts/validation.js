@@ -56,8 +56,7 @@ export const clearValidation = (formElement, objConfig) => {
     inputList.forEach((inputElement) => {
         hideInputError(formElement, inputElement, objConfig);
     });
-    buttonElement.disabled = true;
-    buttonElement.classList.add(objConfig.inactiveButtonClass);
+    disableSubmitButton(buttonElement, objConfig);
 };
 
 // Проверка наличия невалидного поля
@@ -70,10 +69,14 @@ const hasInvalidInput = (inputList) => {
 // Переключение активности кнопки
 const toggleButtonState = (inputList, buttonElement, objConfig) => {
     if (hasInvalidInput(inputList)) {
-        buttonElement.disabled = true;
-        buttonElement.classList.add(objConfig.inactiveButtonClass);
+        disableSubmitButton(buttonElement, objConfig);
     } else {
         buttonElement.disabled = false;
         buttonElement.classList.remove(objConfig.inactiveButtonClass);
     }
 }; 
+// Выключение активности кнопки
+const disableSubmitButton = (buttonElement, objConfig) => {
+    buttonElement.disabled = true;
+    buttonElement.classList.add(objConfig.inactiveButtonClass);
+};

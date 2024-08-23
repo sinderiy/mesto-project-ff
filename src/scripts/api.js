@@ -7,124 +7,93 @@ const config = {
   }
 }
 
+const handleResponse = (fetchPromise, functionName) => {
+  return fetchPromise.then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Запрос ${functionName} завершился с ошибкой: ${res.status}`);
+  });
+}
+
 // Получение данных пользователя
 export const getUserInfo = () => {
-  return fetch(`${config.baseURL}/users/me`, {
+  const fetchPromise = fetch(`${config.baseURL}/users/me`, {
     headers: config.headers
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Запрос getUserInfo завершился с ошибкой: ${res.status}`);
-    });
+  });
+  return handleResponse(fetchPromise, 'getUserInfo');
 };
 
 // Получение массива карточек
 export const getInitialCards = () => {
-  return fetch(`${config.baseURL}/cards`, {
+  const fetchPromise = fetch(`${config.baseURL}/cards`, {
     headers: config.headers
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Запрос getInitialCards завершился с ошибкой: ${res.status}`);
-    });
+  });
+  return handleResponse(fetchPromise, 'getInitialCards');
 };
 
 // Обновление информации профиля
 export const patchUserInfo = (userName, userAbout) => {
-  return fetch(`${config.baseURL}/users/me`, {
+  const fetchPromise = fetch(`${config.baseURL}/users/me`, {
     method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify({
       name: userName,
       about: userAbout
     })
-  })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Запрос patchUserInfo завершился с ошибкой: ${res.status}`);
   });
+  return handleResponse(fetchPromise, 'patchUserInfo');
 }
 
 // Добавление новой карточки на сервер
 export const addNewCard = (cardName, cardLink) => {
-  return fetch(`${config.baseURL}/cards`, {
+  const fetchPromise = fetch(`${config.baseURL}/cards`, {
     method: 'POST',
     headers: config.headers,
     body: JSON.stringify({
       name: cardName,
       link: cardLink
     })
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Запрос addNewCard завершился с ошибкой: ${res.status}`);
-    });
+  });
+  return handleResponse(fetchPromise, 'addNewCard');
 }
 
 // Удаление карточки на сервере
 export const deleteCard = (cardId) => {
-  return fetch(`${config.baseURL}/cards/${cardId}`, {
+  const fetchPromise = fetch(`${config.baseURL}/cards/${cardId}`, {
     method: 'DELETE',
     headers: config.headers
-  })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Запрос deleteCard завершился с ошибкой: ${res.status}`);
   });
+  return handleResponse(fetchPromise, 'deleteCard');
 }
 
 // Постановка лайка
 export const putLike = (cardId) => {
-  return fetch(`${config.baseURL}/cards/likes/${cardId}`, {
+  const fetchPromise = fetch(`${config.baseURL}/cards/likes/${cardId}`, {
     method: 'PUT',
     headers: config.headers
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Запрос putLike завершился с ошибкой: ${res.status}`);
-  });
+  return handleResponse(fetchPromise, 'putLike');
 }
 
 // Удаление лайка
 export const deleteLike = (cardId) => {
-  return fetch(`${config.baseURL}/cards/likes/${cardId}`, {
+  const fetchPromise = fetch(`${config.baseURL}/cards/likes/${cardId}`, {
     method: 'DELETE',
     headers: config.headers
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Запрос deleteLike завершился с ошибкой: ${res.status}`);
-  });
+  return handleResponse(fetchPromise, 'deleteLike');
 }
 
 // Обновление аватара пользователя
 export const patchUserAvatar = (avatarURL) => {
-  return fetch(`${config.baseURL}/users/me/avatar`, {
+  const fetchPromise = fetch(`${config.baseURL}/users/me/avatar`, {
     method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify({
       avatar: avatarURL
     })
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Запрос patchUserAvatar завершился с ошибкой: ${res.status}`);
-  });
+  return handleResponse(fetchPromise, 'patchUserAvatar');
 }
 

@@ -26,11 +26,7 @@ export function createCard(currentUserID, cardData, deleteCallback, likeCallback
 
 // Обновление кол-ва лайков на карточке
 export function updateLikeCount(cardData, cardElement) {
-  if (cardData.likes.length > 0) {
-    cardElement.querySelector('.card__likes-count').textContent = cardData.likes.length;
-  } else {
-    cardElement.querySelector('.card__likes-count').textContent = '';
-  }
+  cardElement.querySelector('.card__likes-count').textContent = cardData.likes.length > 0 ? cardData.likes.length : '';
 };
 
 // Закрашивание кнопки лайк при старте

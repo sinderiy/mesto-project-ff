@@ -57,15 +57,17 @@ function openCardImage(evt) {
 function handleAvatarFormSubmit(evt) {
     evt.preventDefault();
     patchUserAvatar(avatarUrlInput.value)
-        .then(() => {
-            renderLoading(false, evt.target);
+        .then((res) => {
             closeModal(avatarEditPopup);
-            avatarElement.style = `background-image: url(${avatarUrlInput.value});`;
+            avatarElement.style = `background-image: url(${res.avatar});`;
             avatarFormElement.reset();
             clearValidation(avatarFormElement, objConfig);
         })
         .catch((error) => {
             console.log(error);
+        })
+        .finally(() => {
+            renderLoading(false, evt.target);
         });
     renderLoading(true, evt.target);
 };
@@ -73,15 +75,17 @@ function handleAvatarFormSubmit(evt) {
 // Изменение данных профиля
 function handleProfileFormSubmit(evt) {
     evt.preventDefault();
-    nameElement.textContent = nameInput.value;
-    jobElement.textContent = jobInput.value;
     patchUserInfo(nameInput.value, jobInput.value)
-        .then(() => {
-            renderLoading(false, evt.target);
+        .then((res) => {
+            nameElement.textContent = res.name;
+            jobElement.textContent = res.about;
             closeModal(typeEditPopup);
         })
         .catch((error) => {
             console.log(error);
+        })
+        .finally(() => {
+            renderLoading(false, evt.target);
         });
     renderLoading(true, evt.target);
 };
@@ -91,68 +95,46 @@ function handleNewImageSubmit(evt) {
     evt.preventDefault();
     addNewCard(placeNameInput.value, placeUrlInput.value)
         .then((newCardInfo) => {
-            const newCardObj = {
-                likes: [],
-                _id: newCardInfo._id,
-                name: placeNameInput.value,
-                link: placeUrlInput.value,
-                owner: {
-                    _id: currentUserID
-                }
-            };
-            const newCard = createCard(currentUserID, newCardObj, deleteCardCallback, toggleLikeCallback, openCardImage);
+            const newCard = createCard(currentUserID, newCardInfo, deleteCardCallback, toggleLikeCallback, openCardImage);
             placesList.prepend(newCard);
             clearValidation(newCardFormElement, objConfig);
             newCardFormElement.reset();
-            renderLoading(false, evt.target);
             closeModal(newCardPopup);
         })
         .catch((error) => {
             console.log(error);
+        })
+        .finally(() => {
+            renderLoading(false, evt.target);
         });
     renderLoading(true, evt.target);
 };
 
 // Удаление карточки визуально и на сервере
 function deleteCardCallback(evt) {
-    deleteCard(evt);
     const placeItem = evt.target.closest('.places__item');
     const cardElementID = placeItem.id;
     deleteCardApi(cardElementID);
+    deleteCard(evt);
 };
 
 // Переключение лайка на сервере
 function toggleLikeCallback(evt) {
-    likeCard(evt);
     const placeItem = evt.target.closest('.places__item');
     const cardElementID = placeItem.id;
-    if (evt.target.classList.contains('card__like-button_is-active')) {
-        putLike(cardElementID)
-            .then((cardData) => {
-                updateLikeCount(cardData, placeItem);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    } else {
-        deleteLike(cardElementID)
-            .then((cardData) => {
-                updateLikeCount(cardData, placeItem);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
+    const likeMethod = evt.target.classList.contains('card__like-button_is-active') ? deleteLike : putLike;
+    likeMethod(cardElementID)
+        .then((cardData) => {
+            updateLikeCount(cardData, placeItem);
+            likeCard(evt);
+        })
+        .catch(err => console.log(err));
 };
 
 // Отрисовка загрузки при сохранении
 function renderLoading(isLoading, formElement) {
     const buttonElement = formElement.querySelector(objConfig.submitButtonSelector);
-    if (isLoading) {
-        buttonElement.textContent = 'Сохранение...';
-    } else {
-        buttonElement.textContent = 'Сохранить';
-    }
+    buttonElement.textContent = isLoading ? 'Сохранение...' : 'Сохранить';
 };
 
 // Настройка модальных окон
